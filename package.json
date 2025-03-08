@@ -1,0 +1,30 @@
+{
+  "name": "discord-rotate-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/greenroach/express-ts-template.git",
+  "author": "Đức Đậu <52856963+dauleduc2@users.noreply.github.com>",
+  "license": "MIT",
+  "dependencies": {
+    "-": "^0.0.1",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.10",
+    "D": "^1.0.0",
+    "add": "^2.0.6",
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2",
+    "yarn": "^1.22.22"
+  },
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "serve": "node dist/index.js",
+    "dev": "nodemon src/index.ts"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
