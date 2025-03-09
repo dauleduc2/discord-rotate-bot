@@ -1,29 +1,38 @@
 import { Queue } from "./queue";
 
-export type State<T> = {
-  [key: string]: Queue<T>;
-};
+export interface GuildStateProps<T> {
+  queue: Queue<T>;
+  isEqual: (a: T, b: T) => boolean;
+}
 
-export class GlobalState<T> {
-  private state: State<T> = {};
-
-  public get(guildId: string) {
-    const guildState = this.state[guildId];
-
-    if (!guildState) this.state[guildId] = new Queue<T>();
-
-    return this.state[guildId];
+export class GuildState<T> {
+  private queue: Queue<T>;
+  private members: T[] = [];
+  private readonly isEqual: GuildStateProps<T>["isEqual"];
+  constructor(props: Partial<GuildStateProps<T>>) {
+    this.queue = props.queue ?? new Queue<T>({ isEqual: props.isEqual });
+    this.isEqual = props.isEqual ?? ((a, b) => a === b);
   }
 
-  public set(guildId: string, queue: Queue<T>) {
-    this.state[guildId] = queue;
+  public getQueue() {
+    return this.queue;
   }
 
-  public remove(guildId: string) {
-    delete this.state[guildId];
+  public getMembers() {
+    return this.members;
   }
 
-  public reset(guildId: string) {
-    this.state[guildId].reset();
+  public addMember(member: T) {
+    this.members.push(member);
+    this.queue.push(member);
+  }
+
+  public removeMember(member: T) {
+    this.queue.remove(member);
+    this.members = this.members.filter((m) => !this.isEqual(m, member));
+  }
+
+  public isMemberExist(member: T) {
+    return this.members.some((m) => this.isEqual(m, member));
   }
 }

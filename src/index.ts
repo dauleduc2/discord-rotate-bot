@@ -10,8 +10,9 @@ import {
 import dotenv from "dotenv";
 import { getGuildMembers, membersToSelectOptions, tagUser } from "./util";
 import { Queue } from "./queue";
-import { GlobalState } from "./guildState";
 import { COMMANDS, INTERACTIONS } from "./constants";
+import { GlobalState } from "./globalState";
+import { GuildState } from "./guildState";
 
 dotenv.config();
 
@@ -68,7 +69,7 @@ client.once(Events.ClientReady, (c) => {
 const globalState = new GlobalState<string>();
 
 client.on(Events.GuildCreate, async (guild) => {
-  globalState.set(guild.id, new Queue<string>());
+  globalState.set(guild.id, new GuildState<string>({}));
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -123,16 +124,24 @@ client.on(Events.InteractionCreate, async (interaction) => {
       if (!members) return;
 
       const options = membersToSelectOptions(members, false);
+      // filter already exist members
+      const guildState = globalState.get(guildId);
 
-      if (options.length === 0) {
-        await interaction.editReply("No members found");
+      const onlyUnattendedMembers = options.filter(
+        (option) => !guildState.isMemberExist(option.value)
+      );
+
+      if (onlyUnattendedMembers.length === 0) {
+        await interaction.editReply(
+          "No members found or all members are joined"
+        );
         return;
       }
 
       const selectMenu = new StringSelectMenuBuilder()
         .setCustomId(INTERACTIONS.ADD_MEMBER)
         .setPlaceholder("Select a member")
-        .addOptions(options);
+        .addOptions(onlyUnattendedMembers);
 
       const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
         selectMenu
@@ -158,16 +167,15 @@ client.on("interactionCreate", async (interaction) => {
     const selectedMemberId = interaction.values[0];
     const member = await guild.members.fetch(selectedMemberId);
 
-    const bookingQueue = globalState.get(guild.id);
-    const isAlreadyExist = bookingQueue.isAlreadyExist(member.id);
+    const guildState = globalState.get(guild.id);
+    const isAlreadyExist = guildState.isMemberExist(member.id);
 
     if (isAlreadyExist) {
       return await interaction.reply({
         content: "Member already exist",
-        ephemeral: true,
       });
     } else {
-      bookingQueue.push(member.id);
+      guildState.addMember(member.id);
       const embed = new EmbedBuilder()
         .setTitle("Add member to booking list success")
         .setDescription(`You selected: **${member.user.tag}**`);
