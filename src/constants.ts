@@ -9,4 +9,5 @@ export const COMMANDS = {
 
 export const INTERACTIONS = {
   ADD_MEMBER: "add_member",
+  REMOVE_MEMBER: "remove_member",
 };

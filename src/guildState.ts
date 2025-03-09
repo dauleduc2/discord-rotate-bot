@@ -35,4 +35,9 @@ export class GuildState<T> {
   public isMemberExist(member: T) {
     return this.members.some((m) => this.isEqual(m, member));
   }
+
+  public reset() {
+    this.queue.reset();
+    this.members = [];
+  }
 }

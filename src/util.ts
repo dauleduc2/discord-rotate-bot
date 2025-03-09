@@ -1,6 +1,8 @@
 import { Client, Collection, GuildMember, User } from "discord.js";
 
-export const tagUser = (user: User) => {
+export const tagUser = (user: User | string) => {
+  if (typeof user === "string") return `<@${user}>`;
+
   return `<@${user.id}>`;
 };
 

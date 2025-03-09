@@ -9,7 +9,6 @@ import {
 } from "discord.js";
 import dotenv from "dotenv";
 import { getGuildMembers, membersToSelectOptions, tagUser } from "./util";
-import { Queue } from "./queue";
 import { COMMANDS, INTERACTIONS } from "./constants";
 import { GlobalState } from "./globalState";
 import { GuildState } from "./guildState";
@@ -74,9 +73,10 @@ client.on(Events.GuildCreate, async (guild) => {
 
 client.on(Events.InteractionCreate, async (interaction) => {
   const { user, guildId } = interaction;
-  if (!interaction.isCommand()) return;
+  if (!interaction.isCommand() || !guildId) return;
 
   const { commandName } = interaction;
+
   try {
     switch (commandName) {
       case COMMANDS.ACCEPT:
@@ -85,12 +85,26 @@ client.on(Events.InteractionCreate, async (interaction) => {
       case COMMANDS.SKIP:
         await interaction.reply(`Skip today turn`);
         break;
-      case COMMANDS.LIST:
-        await interaction.reply(`List the current booking list`);
+      case COMMANDS.LIST: {
+        const guildState = globalState.get(guildId);
+        const members = guildState.getMembers();
+
+        if (members.length === 0) {
+          await interaction.reply("No members found");
+          return;
+        }
+
+        const memberTags = members.map((memberId) => tagUser(memberId));
+        await interaction.reply(`Booking list: ${memberTags.join(", ")}`);
         break;
-      case COMMANDS.RESET:
-        await interaction.reply(`Reset the booking list`);
+      }
+      case COMMANDS.RESET: {
+        const guildState = globalState.get(guildId);
+        guildState.reset();
+
+        await interaction.reply(`Reset the booking list success!`);
         break;
+      }
       default:
         break;
     }
@@ -154,6 +168,44 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
       break;
     }
+
+    case COMMANDS.REMOVE: {
+      await interaction.deferReply();
+      const guildState = globalState.get(guildId);
+      const allMembers = await getGuildMembers(client, guildId);
+      const alreadyJoinedMemberIds = guildState.getMembers();
+
+      const alreadyJoinedMembers = allMembers?.filter((member) =>
+        alreadyJoinedMemberIds.includes(member.id)
+      );
+
+      if (!alreadyJoinedMembers) return;
+
+      const options = membersToSelectOptions(alreadyJoinedMembers, true);
+
+      if (options.length === 0) {
+        await interaction.editReply(
+          "No members found or there's no member to remove"
+        );
+        return;
+      }
+
+      const selectMenu = new StringSelectMenuBuilder()
+        .setCustomId(INTERACTIONS.REMOVE_MEMBER)
+        .setPlaceholder("Select a member")
+        .addOptions(options);
+
+      const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+        selectMenu
+      );
+
+      await interaction.editReply({
+        content: "Select a member from the dropdown:",
+        components: [row],
+      });
+
+      break;
+    }
   }
 });
 
@@ -182,6 +234,20 @@ client.on("interactionCreate", async (interaction) => {
 
       return await interaction.reply({ embeds: [embed] });
     }
+  }
+
+  if (customId === INTERACTIONS.REMOVE_MEMBER) {
+    const selectedMemberId = interaction.values[0];
+    const member = await guild.members.fetch(selectedMemberId);
+
+    const guildState = globalState.get(guild.id);
+
+    guildState.removeMember(member.id);
+    const embed = new EmbedBuilder()
+      .setTitle("Remove member from booking list success")
+      .setDescription(`You selected: **${member.user.tag}**`);
+
+    return await interaction.reply({ embeds: [embed] });
   }
 });
 
