@@ -11,6 +11,7 @@ import dotenv from "dotenv";
 import { getGuildMembers, membersToSelectOptions, tagUser } from "./util";
 import { Queue } from "./queue";
 import { GlobalState } from "./guildState";
+import { COMMANDS, INTERACTIONS } from "./constants";
 
 dotenv.config();
 
@@ -33,27 +34,27 @@ client.once(Events.ClientReady, (c) => {
   console.log(`Logged in as ${c.user?.tag}`);
 
   const accept = new SlashCommandBuilder()
-    .setName("accept")
+    .setName(COMMANDS.ACCEPT)
     .setDescription("Accept today turn");
 
   const skip = new SlashCommandBuilder()
-    .setName("skip")
+    .setName(COMMANDS.SKIP)
     .setDescription("Skip today turn");
 
   const list = new SlashCommandBuilder()
-    .setName("list")
+    .setName(COMMANDS.LIST)
     .setDescription("List the current booking list");
 
   const add = new SlashCommandBuilder()
-    .setName("add")
+    .setName(COMMANDS.ADD)
     .setDescription("Add a new member to the booking list");
 
   const remove = new SlashCommandBuilder()
-    .setName("remove")
+    .setName(COMMANDS.REMOVE)
     .setDescription("Remove a member from the booking list");
 
   const reset = new SlashCommandBuilder()
-    .setName("reset")
+    .setName(COMMANDS.RESET)
     .setDescription("Reset the booking list");
 
   client.application?.commands.create(accept);
@@ -77,16 +78,16 @@ client.on(Events.InteractionCreate, async (interaction) => {
   const { commandName } = interaction;
   try {
     switch (commandName) {
-      case "accept":
+      case COMMANDS.ACCEPT:
         await interaction.reply(`${tagUser(user)} accept today turn`);
         break;
-      case "skip":
+      case COMMANDS.SKIP:
         await interaction.reply(`Skip today turn`);
         break;
-      case "list":
+      case COMMANDS.LIST:
         await interaction.reply(`List the current booking list`);
         break;
-      case "reset":
+      case COMMANDS.RESET:
         await interaction.reply(`Reset the booking list`);
         break;
       default:
@@ -115,7 +116,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
   if (!guildId) return;
 
   switch (commandName) {
-    case "add": {
+    case COMMANDS.ADD: {
       await interaction.deferReply();
       const members = await getGuildMembers(client, guildId);
 
@@ -129,7 +130,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
 
       const selectMenu = new StringSelectMenuBuilder()
-        .setCustomId("add_member")
+        .setCustomId(INTERACTIONS.ADD_MEMBER)
         .setPlaceholder("Select a member")
         .addOptions(options);
 
@@ -153,7 +154,7 @@ client.on("interactionCreate", async (interaction) => {
 
   if (!guild) return;
 
-  if (customId === "add_member") {
+  if (customId === INTERACTIONS.ADD_MEMBER) {
     const selectedMemberId = interaction.values[0];
     const member = await guild.members.fetch(selectedMemberId);
 
