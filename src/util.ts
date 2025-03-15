@@ -1,4 +1,7 @@
 import { Client, Collection, GuildMember, User } from "discord.js";
+import { GlobalState } from "./globalState";
+import { globalState } from ".";
+import { COMMANDS } from "./constants";
 
 export const tagUser = (user: User | string) => {
   if (typeof user === "string") return `<@${user}>`;
@@ -32,4 +35,17 @@ export const membersToSelectOptions = (
     });
 
   return options;
+};
+
+export const isPassPrecheck = (
+  command: string,
+  guildId: string,
+  state: typeof globalState
+): string | null => {
+  const guildState = state.get(guildId);
+  if (command !== COMMANDS.CONFIG && !guildState.getAnnounceChannel()) {
+    return "Please config the announce channel before using other commands";
+  }
+
+  return null;
 };

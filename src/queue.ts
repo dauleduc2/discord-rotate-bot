@@ -2,9 +2,10 @@ interface QueueProps<T> {
   isEqual: (a: T, b: T) => boolean;
 }
 
-export class Queue<T> {
+export class PersistQueue<T> {
   private data: T[] = [];
   private readonly isEqual: QueueProps<T>["isEqual"];
+  private currentIndex = 0;
 
   constructor(props?: Partial<QueueProps<T>>) {
     this.isEqual = props?.isEqual || ((a, b) => a === b);
@@ -14,8 +15,16 @@ export class Queue<T> {
     this.data.push(item);
   }
 
-  pop() {
-    return this.data.shift();
+  getNext() {
+    const result = this.data[this.currentIndex];
+
+    if (this.currentIndex < this.data.length - 1) {
+      this.currentIndex++;
+    } else {
+      this.currentIndex = 0;
+    }
+
+    return result;
   }
 
   get length() {

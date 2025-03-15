@@ -1,16 +1,17 @@
-import { Queue } from "./queue";
+import { PersistQueue } from "./queue";
 
 export interface GuildStateProps<T> {
-  queue: Queue<T>;
+  queue: PersistQueue<T>;
   isEqual: (a: T, b: T) => boolean;
 }
 
 export class GuildState<T> {
-  private queue: Queue<T>;
+  private queue: PersistQueue<T>;
   private members: T[] = [];
+  private announceChannel: string | null = null;
   private readonly isEqual: GuildStateProps<T>["isEqual"];
   constructor(props: Partial<GuildStateProps<T>>) {
-    this.queue = props.queue ?? new Queue<T>({ isEqual: props.isEqual });
+    this.queue = props.queue ?? new PersistQueue<T>({ isEqual: props.isEqual });
     this.isEqual = props.isEqual ?? ((a, b) => a === b);
   }
 
@@ -18,7 +19,7 @@ export class GuildState<T> {
     return this.queue;
   }
 
-  public getMembers() {
+  public getMembersInQueue() {
     return this.members;
   }
 
@@ -39,5 +40,17 @@ export class GuildState<T> {
   public reset() {
     this.queue.reset();
     this.members = [];
+  }
+
+  public getNextMember() {
+    return this.queue.getNext();
+  }
+
+  public setAnnounceChannel(channelId: string) {
+    this.announceChannel = channelId;
+  }
+
+  public getAnnounceChannel() {
+    return this.announceChannel;
   }
 }

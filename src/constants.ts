@@ -5,6 +5,7 @@ export const COMMANDS = {
   ADD: "add",
   REMOVE: "remove",
   RESET: "reset",
+  CONFIG: "config",
 };
 
 export const INTERACTIONS = {
