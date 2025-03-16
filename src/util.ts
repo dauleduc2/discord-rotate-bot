@@ -1,7 +1,7 @@
 import { Client, Collection, GuildMember, User } from "discord.js";
-import { GlobalState } from "./globalState";
 import { globalState } from ".";
 import { COMMANDS } from "./constants";
+import { TIME_INPUT_FORMAT_REGEX } from "./regex";
 
 export const tagUser = (user: User | string) => {
   if (typeof user === "string") return `<@${user}>`;
@@ -43,9 +43,29 @@ export const isPassPrecheck = (
   state: typeof globalState
 ): string | null => {
   const guildState = state.get(guildId);
-  if (command !== COMMANDS.CONFIG_CHANNEL && !guildState.getAnnounceChannel()) {
+  const needChannelConfigCommands = [
+    COMMANDS.ACCEPT,
+    COMMANDS.ADD,
+    COMMANDS.LIST,
+    COMMANDS.REMOVE,
+    COMMANDS.RESET,
+    COMMANDS.RESET_QUEUE,
+    COMMANDS.SKIP,
+  ];
+  if (
+    needChannelConfigCommands.includes(command) &&
+    !guildState.getAnnounceChannel()
+  ) {
     return `Please config the announce channel by using ***/${COMMANDS.CONFIG_CHANNEL}*** before using other commands`;
   }
 
   return null;
+};
+
+export const extractTimeFromInput = (timeInput: string) => {
+  const time = timeInput.match(TIME_INPUT_FORMAT_REGEX);
+
+  if (!time) return null;
+
+  return time[0].split(":");
 };

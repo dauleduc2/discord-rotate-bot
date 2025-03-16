@@ -6,9 +6,10 @@ export interface GuildStateProps<T> {
 }
 
 export class GuildState<T> {
-  private queue: PersistQueue<T>;
+  private readonly queue: PersistQueue<T>;
   private members: T[] = [];
   private announceChannel: string | null = null;
+  private reminderTime: string = "11:00"; // Default to 11:00 AM everyday
   private readonly isEqual: GuildStateProps<T>["isEqual"];
   constructor(props: Partial<GuildStateProps<T>>) {
     this.queue = props.queue ?? new PersistQueue<T>({ isEqual: props.isEqual });
@@ -56,5 +57,21 @@ export class GuildState<T> {
 
   public startOver() {
     this.queue.startOver();
+  }
+
+  public setReminderTime(time: string) {
+    this.reminderTime = time;
+  }
+
+  public getReminderTime() {
+    return this.reminderTime;
+  }
+
+  public isTimeToAnnounce() {
+    const now = new Date();
+    const [hour, minute] = this.reminderTime?.split(":") ?? [];
+    return (
+      now.getHours() === Number(hour) && now.getMinutes() === Number(minute)
+    );
   }
 }

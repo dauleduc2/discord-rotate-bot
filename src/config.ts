@@ -1,5 +1,5 @@
 import { Client, SlashCommandBuilder, TextChannel } from "discord.js";
-import { COMMANDS } from "./constants";
+import { COMMANDS, INTERACTIONS } from "./constants";
 import cron from "node-cron";
 import { globalState } from ".";
 import { tagUser } from "./util";
@@ -37,6 +37,18 @@ export const registerCommands = (client: Client) => {
     .setName(COMMANDS.CONFIG_CHANNEL)
     .setDescription("Config the channel to announce the next booking member");
 
+  const setReminderTime = new SlashCommandBuilder()
+    .setName(COMMANDS.SET_REMINDER_TIME)
+    .setDescription("Set the reminder time to announce the next booking member")
+    .addStringOption((option) =>
+      option
+        .setName(INTERACTIONS.TIME_INPUT_KEY)
+        .setDescription(
+          "The time to announce the next booking member with format HH:mm (e.g. 14:00)"
+        )
+        .setRequired(true)
+    );
+
   client.application?.commands.create(accept);
   client.application?.commands.create(list);
   client.application?.commands.create(add);
@@ -45,11 +57,12 @@ export const registerCommands = (client: Client) => {
   client.application?.commands.create(skip);
   client.application?.commands.create(configChannel);
   client.application?.commands.create(resetQueue);
+  client.application?.commands.create(setReminderTime);
 };
 
 export const registerCronJob = (client: Client) => {
   // Run cron job to announce the next booking member
-  cron.schedule("*/3 * * * * *", () => {
+  cron.schedule("0 * * * * *", () => {
     console.log("🔄 Running cron job...");
 
     const guilds = client.guilds.cache;
@@ -59,6 +72,13 @@ export const registerCronJob = (client: Client) => {
       const members = guildState.getMembersInQueue();
 
       if (members.length === 0) {
+        return;
+      }
+
+      // check if the current time is matched with the reminder time
+      const shouldAnnounce = guildState.isTimeToAnnounce();
+
+      if (!shouldAnnounce) {
         return;
       }
 

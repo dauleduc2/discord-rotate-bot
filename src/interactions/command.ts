@@ -11,6 +11,7 @@ import {
 } from "../util";
 import { COMMANDS, INTERACTIONS } from "../constants";
 import { client, globalState } from "..";
+import { TIME_INPUT_FORMAT_REGEX } from "../regex";
 
 export const handleCommand = async (interaction: CommandInteraction) => {
   const { user, guildId } = interaction;
@@ -58,6 +59,34 @@ export const handleCommand = async (interaction: CommandInteraction) => {
       case COMMANDS.RESET_QUEUE: {
         guildState.startOver();
         await interaction.reply(`Start over the booking queue success!`);
+        break;
+      }
+
+      case COMMANDS.SET_REMINDER_TIME: {
+        if (!interaction.isChatInputCommand()) return;
+
+        const time = interaction.options.getString(INTERACTIONS.TIME_INPUT_KEY);
+
+        if (!time) {
+          await interaction.reply(
+            "Please provide the time to set the reminder"
+          );
+          return;
+        }
+
+        const isValidFormat = TIME_INPUT_FORMAT_REGEX.test(time);
+
+        if (!isValidFormat) {
+          await interaction.reply(
+            "Invalid time format, please use HH:mm format (e.g. 14:00)"
+          );
+          return;
+        }
+
+        guildState.setReminderTime(time);
+
+        await interaction.reply(`Set the reminder time to ${time}`);
+
         break;
       }
 
