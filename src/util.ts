@@ -43,8 +43,8 @@ export const isPassPrecheck = (
   state: typeof globalState
 ): string | null => {
   const guildState = state.get(guildId);
-  if (command !== COMMANDS.CONFIG && !guildState.getAnnounceChannel()) {
-    return "Please config the announce channel before using other commands";
+  if (command !== COMMANDS.CONFIG_CHANNEL && !guildState.getAnnounceChannel()) {
+    return `Please config the announce channel by using ***/${COMMANDS.CONFIG_CHANNEL}*** before using other commands`;
   }
 
   return null;

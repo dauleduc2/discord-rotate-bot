@@ -35,6 +35,10 @@ export class PersistQueue<T> {
     this.data = [];
   }
 
+  startOver() {
+    this.currentIndex = 0;
+  }
+
   findIndex(item: T) {
     return this.data.findIndex((data) => this.isEqual(data, item));
   }

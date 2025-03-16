@@ -27,10 +27,14 @@ export const registerCommands = (client: Client) => {
 
   const reset = new SlashCommandBuilder()
     .setName(COMMANDS.RESET)
-    .setDescription("Reset the booking list");
+    .setDescription("Reset the booking to the initial state");
+
+  const resetQueue = new SlashCommandBuilder()
+    .setName(COMMANDS.RESET_QUEUE)
+    .setDescription("Start over the booking queue");
 
   const configChannel = new SlashCommandBuilder()
-    .setName(COMMANDS.CONFIG)
+    .setName(COMMANDS.CONFIG_CHANNEL)
     .setDescription("Config the channel to announce the next booking member");
 
   client.application?.commands.create(accept);
@@ -40,6 +44,7 @@ export const registerCommands = (client: Client) => {
   client.application?.commands.create(reset);
   client.application?.commands.create(skip);
   client.application?.commands.create(configChannel);
+  client.application?.commands.create(resetQueue);
 };
 
 export const registerCronJob = (client: Client) => {

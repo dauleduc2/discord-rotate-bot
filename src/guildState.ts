@@ -53,4 +53,8 @@ export class GuildState<T> {
   public getAnnounceChannel() {
     return this.announceChannel;
   }
+
+  public startOver() {
+    this.queue.startOver();
+  }
 }

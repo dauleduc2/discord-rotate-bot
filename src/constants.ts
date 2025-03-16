@@ -5,7 +5,8 @@ export const COMMANDS = {
   ADD: "add",
   REMOVE: "remove",
   RESET: "reset",
-  CONFIG: "config",
+  RESET_QUEUE: "reset_queue",
+  CONFIG_CHANNEL: "config_channel",
 };
 
 export const INTERACTIONS = {

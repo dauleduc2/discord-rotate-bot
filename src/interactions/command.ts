@@ -18,7 +18,7 @@ export const handleCommand = async (interaction: CommandInteraction) => {
 
   const { commandName } = interaction;
   const precheckError = isPassPrecheck(commandName, guildId, globalState);
-
+  const guildState = globalState.get(guildId);
   if (precheckError) {
     await interaction.reply(precheckError);
     return;
@@ -29,8 +29,7 @@ export const handleCommand = async (interaction: CommandInteraction) => {
       case COMMANDS.ACCEPT:
         await interaction.reply(`${tagUser(user)} accept today turn`);
         break;
-      case COMMANDS.CONFIG: {
-        const guildState = globalState.get(guildId);
+      case COMMANDS.CONFIG_CHANNEL: {
         guildState.setAnnounceChannel(interaction.channelId);
         await interaction.reply(`Config the channel to announce success!`);
         break;
@@ -39,7 +38,6 @@ export const handleCommand = async (interaction: CommandInteraction) => {
         await interaction.reply(`Skip today turn`);
         break;
       case COMMANDS.LIST: {
-        const guildState = globalState.get(guildId);
         const members = guildState.getMembersInQueue();
 
         if (members.length === 0) {
@@ -52,10 +50,14 @@ export const handleCommand = async (interaction: CommandInteraction) => {
         break;
       }
       case COMMANDS.RESET: {
-        const guildState = globalState.get(guildId);
         guildState.reset();
-
         await interaction.reply(`Reset the booking list success!`);
+        break;
+      }
+
+      case COMMANDS.RESET_QUEUE: {
+        guildState.startOver();
+        await interaction.reply(`Start over the booking queue success!`);
         break;
       }
 
