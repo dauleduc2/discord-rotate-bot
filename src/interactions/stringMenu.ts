@@ -1,6 +1,7 @@
 import { EmbedBuilder, StringSelectMenuInteraction } from "discord.js";
 import { INTERACTIONS } from "../constants";
 import { globalState } from "..";
+import { tagUser } from "../util";
 
 export const handleSelectStringMenu = async (
   interaction: StringSelectMenuInteraction
@@ -10,21 +11,26 @@ export const handleSelectStringMenu = async (
   if (!guild) return;
 
   if (customId === INTERACTIONS.ADD_MEMBER) {
-    const selectedMemberId = interaction.values[0];
-    const member = await guild.members.fetch(selectedMemberId);
+    const selectedMemberIds = interaction.values;
 
     const guildState = globalState.get(guild.id);
-    const isAlreadyExist = guildState.isMemberExist(member.id);
+    const isAlreadyExist = selectedMemberIds.some((id) =>
+      guildState.isMemberExist(id)
+    );
 
     if (isAlreadyExist) {
       return await interaction.reply({
-        content: "Member already exist",
+        content: "One or more member already exist",
       });
     } else {
-      guildState.addMember(member.id);
+      guildState.addMembers(selectedMemberIds);
       const embed = new EmbedBuilder()
-        .setTitle("Add member to booking list success")
-        .setDescription(`You selected: **${member.user.tag}**`);
+        .setTitle("Add member to queue success")
+        .setDescription(
+          `Added ${selectedMemberIds
+            .map((id) => `**${tagUser(id)}**`)
+            .join(", ")} to the queue`
+        );
 
       return await interaction.reply({ embeds: [embed] });
     }
@@ -32,14 +38,15 @@ export const handleSelectStringMenu = async (
 
   if (customId === INTERACTIONS.REMOVE_MEMBER) {
     const selectedMemberId = interaction.values[0];
-    const member = await guild.members.fetch(selectedMemberId);
 
     const guildState = globalState.get(guild.id);
 
-    guildState.removeMember(member.id);
+    guildState.removeMember(selectedMemberId);
     const embed = new EmbedBuilder()
-      .setTitle("Remove member from booking list success")
-      .setDescription(`You selected: **${member.user.tag}**`);
+      .setTitle("Remove member from queue success")
+      .setDescription(
+        `You removed **${tagUser(selectedMemberId)}** from the queue`
+      );
 
     return await interaction.reply({ embeds: [embed] });
   }

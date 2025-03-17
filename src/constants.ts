@@ -5,7 +5,7 @@ export const COMMANDS = {
   ADD: "add",
   REMOVE: "remove",
   RESET: "reset",
-  RESET_QUEUE: "reset_queue",
+  START_OVER: "start_over",
   CONFIG_CHANNEL: "config_channel",
   SET_REMINDER_TIME: "set_reminder_time",
 };

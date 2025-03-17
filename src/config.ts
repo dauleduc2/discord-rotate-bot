@@ -15,37 +15,35 @@ export const registerCommands = (client: Client) => {
 
   const list = new SlashCommandBuilder()
     .setName(COMMANDS.LIST)
-    .setDescription("List the current booking list");
+    .setDescription("List the current queue");
 
   const add = new SlashCommandBuilder()
     .setName(COMMANDS.ADD)
-    .setDescription("Add a new member to the booking list");
+    .setDescription("Add one or more members to the queue");
 
   const remove = new SlashCommandBuilder()
     .setName(COMMANDS.REMOVE)
-    .setDescription("Remove a member from the booking list");
+    .setDescription("Remove a member from the queue");
 
   const reset = new SlashCommandBuilder()
     .setName(COMMANDS.RESET)
-    .setDescription("Reset the booking to the initial state");
+    .setDescription("Reset the queue to the initial state");
 
   const resetQueue = new SlashCommandBuilder()
-    .setName(COMMANDS.RESET_QUEUE)
-    .setDescription("Start over the booking queue");
+    .setName(COMMANDS.START_OVER)
+    .setDescription("Start over the queue");
 
   const configChannel = new SlashCommandBuilder()
     .setName(COMMANDS.CONFIG_CHANNEL)
-    .setDescription("Config the channel to announce the next booking member");
+    .setDescription("Config the channel to announce the member");
 
   const setReminderTime = new SlashCommandBuilder()
     .setName(COMMANDS.SET_REMINDER_TIME)
-    .setDescription("Set the reminder time to announce the next booking member")
+    .setDescription("Set the reminder time to announce")
     .addStringOption((option) =>
       option
         .setName(INTERACTIONS.TIME_INPUT_KEY)
-        .setDescription(
-          "The time to announce the next booking member with format HH:mm (e.g. 14:00)"
-        )
+        .setDescription("Set daily announce with format HH:mm (e.g. 14:00)")
         .setRequired(true)
     );
 
@@ -61,7 +59,7 @@ export const registerCommands = (client: Client) => {
 };
 
 export const registerCronJob = (client: Client) => {
-  // Run cron job to announce the next booking member
+  // Run cron job to announce the next member
   cron.schedule("0 * * * * *", () => {
     console.log("🔄 Running cron job...");
 
@@ -92,7 +90,9 @@ export const registerCronJob = (client: Client) => {
         return;
       }
 
-      channel.send(`Next booking member is: ${tagUser(nextMemberId)}`);
+      guildState.moveNext();
+
+      channel.send(`Next member in queue is: ${tagUser(nextMemberId)}`);
     });
   });
 };

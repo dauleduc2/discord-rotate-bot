@@ -29,6 +29,11 @@ export class GuildState<T> {
     this.queue.push(member);
   }
 
+  public addMembers(members: T[]) {
+    this.members = [...this.members, ...members];
+    this.queue.pushAll(members);
+  }
+
   public removeMember(member: T) {
     this.queue.remove(member);
     this.members = this.members.filter((m) => !this.isEqual(m, member));
@@ -45,6 +50,10 @@ export class GuildState<T> {
 
   public getNextMember() {
     return this.queue.getNext();
+  }
+
+  public moveNext() {
+    this.queue.moveNext();
   }
 
   public setAnnounceChannel(channelId: string) {

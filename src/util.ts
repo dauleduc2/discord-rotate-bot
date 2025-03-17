@@ -49,7 +49,7 @@ export const isPassPrecheck = (
     COMMANDS.LIST,
     COMMANDS.REMOVE,
     COMMANDS.RESET,
-    COMMANDS.RESET_QUEUE,
+    COMMANDS.START_OVER,
     COMMANDS.SKIP,
   ];
   if (

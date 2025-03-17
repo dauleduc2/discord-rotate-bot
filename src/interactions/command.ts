@@ -47,18 +47,18 @@ export const handleCommand = async (interaction: CommandInteraction) => {
         }
 
         const memberTags = members.map((memberId) => tagUser(memberId));
-        await interaction.reply(`Booking list: ${memberTags.join(", ")}`);
+        await interaction.reply(`Queue list: ${memberTags.join(", ")}`);
         break;
       }
       case COMMANDS.RESET: {
         guildState.reset();
-        await interaction.reply(`Reset the booking list success!`);
+        await interaction.reply(`Reset the queue list success!`);
         break;
       }
 
-      case COMMANDS.RESET_QUEUE: {
+      case COMMANDS.START_OVER: {
         guildState.startOver();
-        await interaction.reply(`Start over the booking queue success!`);
+        await interaction.reply(`Start over the queue success!`);
         break;
       }
 
@@ -85,7 +85,7 @@ export const handleCommand = async (interaction: CommandInteraction) => {
 
         guildState.setReminderTime(time);
 
-        await interaction.reply(`Set the reminder time to ${time}`);
+        await interaction.reply(`Set the reminder time to ${time} everyday`);
 
         break;
       }
@@ -109,7 +109,10 @@ export const handleCommand = async (interaction: CommandInteraction) => {
         const selectMenu = new StringSelectMenuBuilder()
           .setCustomId(INTERACTIONS.ADD_MEMBER)
           .setPlaceholder("Select a member")
-          .addOptions(onlyUnattendedMembers);
+          .addOptions(onlyUnattendedMembers)
+          .setMinValues(1)
+          .setMaxValues(onlyUnattendedMembers.length);
+
         const row =
           new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
             selectMenu

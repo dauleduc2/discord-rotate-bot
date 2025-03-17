@@ -9,15 +9,6 @@ import { registerCommands, registerCronJob } from "./config";
 
 dotenv.config();
 
-// IDEA: Doing an rotate booking bot that rotate the booking members in a discord server
-// The bot will have a command to accept the booking
-// The bot will have a command to skip the current turn and pass to the next one
-// The bot will have a command to show the current booking list
-// The bot will have a command to add a new member to the booking list
-// The bot will have a command to remove a member from the booking list
-// The bot will have a command to reset the booking list
-// The bot will automatically send a message to announce the next booking member at 11:00 AM everyday
-
 export const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
 });

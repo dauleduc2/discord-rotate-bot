@@ -15,16 +15,22 @@ export class PersistQueue<T> {
     this.data.push(item);
   }
 
+  pushAll(items: T[]) {
+    this.data.push(...items);
+  }
+
   getNext() {
     const result = this.data[this.currentIndex];
 
+    return result;
+  }
+
+  moveNext() {
     if (this.currentIndex < this.data.length - 1) {
       this.currentIndex++;
     } else {
       this.currentIndex = 0;
     }
-
-    return result;
   }
 
   get length() {
