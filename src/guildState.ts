@@ -11,6 +11,7 @@ export class GuildState<T> {
   private announceChannel: string | null = null;
   private reminderTime: string = "11:00"; // Default to 11:00 AM everyday
   private readonly isEqual: GuildStateProps<T>["isEqual"];
+  public shouldReAnnounce = false;
   constructor(props: Partial<GuildStateProps<T>>) {
     this.queue = props.queue ?? new PersistQueue<T>({ isEqual: props.isEqual });
     this.isEqual = props.isEqual ?? ((a, b) => a === b);
@@ -52,6 +53,10 @@ export class GuildState<T> {
     return this.queue.getNext();
   }
 
+  public getPreviousMember() {
+    return this.queue.getPrevious();
+  }
+
   public moveNext() {
     this.queue.moveNext();
   }
@@ -78,9 +83,16 @@ export class GuildState<T> {
 
   public isTimeToAnnounce() {
     const now = new Date();
+    console.log(now.getSeconds());
     const [hour, minute] = this.reminderTime?.split(":") ?? [];
     return (
-      now.getHours() === Number(hour) && now.getMinutes() === Number(minute)
+      now.getHours() === Number(hour) &&
+      now.getMinutes() === Number(minute) &&
+      now.getSeconds() === 0
     );
+  }
+
+  public skipToNext() {
+    this.queue.moveNext();
   }
 }

@@ -35,9 +35,14 @@ export const handleCommand = async (interaction: CommandInteraction) => {
         await interaction.reply(`Config the channel to announce success!`);
         break;
       }
-      case COMMANDS.SKIP:
-        await interaction.reply(`Skip today turn`);
+      case COMMANDS.SKIP: {
+        const currentMember = guildState.getPreviousMember();
+        guildState.shouldReAnnounce = true;
+        await interaction.reply(
+          `${tagUser(currentMember)} has skipped today's turn.`
+        );
         break;
+      }
       case COMMANDS.LIST: {
         const members = guildState.getMembersInQueue();
 

@@ -20,9 +20,33 @@ export class PersistQueue<T> {
   }
 
   getNext() {
-    const result = this.data[this.currentIndex];
+    return this.data[this.currentIndex];
+  }
 
-    return result;
+  getPreviousIndex() {
+    let previousIndex;
+
+    if (this.currentIndex === 0) {
+      previousIndex = this.data.length - 1;
+    } else {
+      previousIndex = this.currentIndex - 1;
+    }
+
+    return previousIndex;
+  }
+
+  getPrevious() {
+    let previousIndex = this.getPreviousIndex();
+
+    return this.data[previousIndex];
+  }
+
+  movePrevious() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+    } else {
+      this.currentIndex = this.data.length - 1;
+    }
   }
 
   moveNext() {
