@@ -83,7 +83,6 @@ export class GuildState<T> {
 
   public isTimeToAnnounce() {
     const now = new Date();
-    console.log(now.getSeconds());
     const [hour, minute] = this.reminderTime?.split(":") ?? [];
     return (
       now.getHours() === Number(hour) &&
