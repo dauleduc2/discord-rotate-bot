@@ -38,6 +38,7 @@ export const handleCommand = async (interaction: CommandInteraction) => {
       }
       case COMMANDS.SKIP: {
         const currentMember = guildState.getPreviousMember();
+        // To announce next number on next interval check
         guildState.shouldReAnnounce = true;
         await interaction.reply(
           `${tagUser(currentMember)} has skipped today's turn.`
