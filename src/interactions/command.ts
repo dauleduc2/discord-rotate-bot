@@ -20,6 +20,7 @@ export const handleCommand = async (interaction: CommandInteraction) => {
   const { commandName } = interaction;
   const precheckError = isPassPrecheck(commandName, guildId, globalState);
   const guildState = globalState.get(guildId);
+
   if (precheckError) {
     await interaction.reply(precheckError);
     return;

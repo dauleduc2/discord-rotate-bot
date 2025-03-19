@@ -1,19 +1,19 @@
-import { Client, Events, GatewayIntentBits } from "discord.js";
 import dotenv from "dotenv";
+dotenv.config();
+
+import { Client, Events, GatewayIntentBits } from "discord.js";
 import { isPassPrecheck } from "./util";
 import { GlobalState } from "./globalState";
 import { GuildState } from "./guildState";
 import { handleCommand } from "./interactions/command";
 import { handleSelectStringMenu } from "./interactions/stringMenu";
 import { registerCommands, registerCronJob } from "./config";
-
-dotenv.config();
+import { ENV_VARIABLES } from "./constants/envVariables";
+import { mockTestData } from "./mocks/guild";
 
 export const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
 });
-
-client.login(process.env.DISCORD_TOKEN);
 
 client.once(Events.ClientReady, (c) => {
   console.log(`Logged in as ${c.user?.tag}`);
@@ -23,6 +23,10 @@ client.once(Events.ClientReady, (c) => {
 });
 
 export const globalState = new GlobalState<string>();
+
+if (ENV_VARIABLES.MODE === "development") {
+  mockTestData(globalState);
+}
 
 client.on(Events.GuildCreate, async (guild) => {
   globalState.set(guild.id, new GuildState<string>({}));
@@ -51,4 +55,4 @@ client.on(Events.InteractionCreate, async (interaction) => {
   handleSelectStringMenu(interaction);
 });
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(ENV_VARIABLES.DISCORD_TOKEN);

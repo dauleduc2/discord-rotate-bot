@@ -1,0 +1,15 @@
+import { ENV_VARIABLES } from "../constants/envVariables";
+import { GlobalState } from "../globalState";
+import { GuildState } from "../guildState";
+
+export const mockTestData = (state: GlobalState<string>) => {
+  const mockGuildState = new GuildState<string>({});
+
+  ENV_VARIABLES.MOCK_MEMBER_IDS.forEach((memberId) => {
+    mockGuildState.addMember(memberId);
+  });
+
+  mockGuildState.setAnnounceChannel(ENV_VARIABLES.MOCK_CHANNEL_ID);
+
+  state.set(ENV_VARIABLES.MOCK_GUILD_ID, mockGuildState);
+};

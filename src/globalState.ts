@@ -15,8 +15,8 @@ export class GlobalState<T> {
     return this.state[guildId];
   }
 
-  public set(guildId: string, queue: GuildState<T>) {
-    this.state[guildId] = queue;
+  public set(guildId: string, guild: GuildState<T>) {
+    this.state[guildId] = guild;
   }
 
   public remove(guildId: string) {
