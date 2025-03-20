@@ -11,7 +11,7 @@ import {
 } from "../util";
 import { COMMANDS, INTERACTIONS } from "../constants/commands";
 import { client } from "..";
-import { TIME_INPUT_FORMAT_REGEX } from "../regex";
+import { TIME_INPUT_FORMAT_REGEX } from "../constants/regex";
 import { GlobalState } from "../globalState";
 import { ENV_VARIABLES } from "../constants/envVariables";
 

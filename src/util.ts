@@ -1,7 +1,7 @@
 import { Client, Collection, GuildMember, User } from "discord.js";
 import { globalState } from ".";
 import { COMMANDS } from "./constants/commands";
-import { TIME_INPUT_FORMAT_REGEX } from "./regex";
+import { TIME_INPUT_FORMAT_REGEX } from "./constants/regex";
 
 export const tagUser = (user: User | string) => {
   if (typeof user === "string") return `<@${user}>`;
