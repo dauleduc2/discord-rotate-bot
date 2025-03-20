@@ -10,10 +10,15 @@ import {
   tagUser,
 } from "../util";
 import { COMMANDS, INTERACTIONS } from "../constants";
-import { client, globalState } from "..";
+import { client } from "..";
 import { TIME_INPUT_FORMAT_REGEX } from "../regex";
+import { GlobalState } from "../globalState";
+import { ENV_VARIABLES } from "../constants/envVariables";
 
-export const handleCommand = async (interaction: CommandInteraction) => {
+export const handleCommand = async (
+  interaction: CommandInteraction,
+  globalState: GlobalState<string>
+) => {
   const { user, guildId } = interaction;
   if (!guildId) return;
 
@@ -47,11 +52,6 @@ export const handleCommand = async (interaction: CommandInteraction) => {
       }
       case COMMANDS.LIST: {
         const members = guildState.getMembersInQueue();
-
-        if (members.length === 0) {
-          await interaction.reply("No members found");
-          return;
-        }
 
         const memberTags = members.map((memberId) => tagUser(memberId));
         await interaction.reply(`Queue list: ${memberTags.join(", ")}`);
@@ -101,7 +101,10 @@ export const handleCommand = async (interaction: CommandInteraction) => {
         await interaction.deferReply();
         const members = await getGuildMembers(client, guildId);
         if (!members) return;
-        const options = membersToSelectOptions(members, false);
+        const options = membersToSelectOptions(
+          members,
+          ENV_VARIABLES.MODE === "production"
+        );
         // filter already exist members
         const guildState = globalState.get(guildId);
         const onlyUnattendedMembers = options.filter(

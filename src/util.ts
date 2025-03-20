@@ -52,11 +52,27 @@ export const isPassPrecheck = (
     COMMANDS.START_OVER,
     COMMANDS.SKIP,
   ];
+
+  const requiredMembersCommands = [
+    COMMANDS.ACCEPT,
+    COMMANDS.LIST,
+    COMMANDS.REMOVE,
+    COMMANDS.START_OVER,
+    COMMANDS.SKIP,
+  ];
+
   if (
     needChannelConfigCommands.includes(command) &&
     !guildState.getAnnounceChannel()
   ) {
     return `Please config the announce channel by using ***/${COMMANDS.CONFIG_CHANNEL}*** before using other commands`;
+  }
+
+  if (
+    requiredMembersCommands.includes(command) &&
+    guildState.getMembersInQueue().length === 0
+  ) {
+    return "No members found, please add members first";
   }
 
   return null;

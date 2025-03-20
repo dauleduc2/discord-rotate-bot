@@ -46,7 +46,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     return;
   }
 
-  handleCommand(interaction);
+  handleCommand(interaction, globalState);
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
