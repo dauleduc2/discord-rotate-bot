@@ -39,10 +39,10 @@ const generateInteraction = (
   } as unknown as CommandInteraction);
 
 describe("Commands", () => {
-  let mockedGlobalState: GlobalState<string>;
+  let globalState: GlobalState<string>;
 
   beforeEach(() => {
-    mockedGlobalState = new GlobalState<string>();
+    globalState = new GlobalState<string>();
   });
 
   afterEach(() => {
@@ -53,7 +53,7 @@ describe("Commands", () => {
     // Arrange
     const mockedInteraction = generateInteraction(COMMANDS.ACCEPT);
 
-    handleCommand(mockedInteraction, mockedGlobalState);
+    handleCommand(mockedInteraction, globalState);
 
     expect(mockedInteraction.reply).toHaveBeenCalledWith(
       `<@${MOCKED_DATA.INTERACT_USER_ID}> accept today turn`
@@ -63,11 +63,11 @@ describe("Commands", () => {
   it("Should return config channel message on /config_channel command", () => {
     // Arrange
     const mockedInteraction = generateInteraction(COMMANDS.CONFIG_CHANNEL);
-    const guildState = mockedGlobalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
+    const guildState = globalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
 
     expect(guildState.getAnnounceChannel()).toBeNull();
 
-    handleCommand(mockedInteraction, mockedGlobalState);
+    handleCommand(mockedInteraction, globalState);
 
     expect(guildState.getAnnounceChannel()).toBe(
       MOCKED_DATA.INTERACT_CHANNEL_ID
@@ -81,11 +81,11 @@ describe("Commands", () => {
   it("Should return list of members on /list command", () => {
     // Arrange
     const mockedInteraction = generateInteraction(COMMANDS.LIST);
-    const guildState = mockedGlobalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
+    const guildState = globalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
 
     MOCKED_DATA.MEMBERS.forEach((member) => guildState.addMember(member));
 
-    handleCommand(mockedInteraction, mockedGlobalState);
+    handleCommand(mockedInteraction, globalState);
 
     expect(mockedInteraction.reply).toHaveBeenCalledWith(
       `Queue list: <@${MOCKED_DATA.MEMBERS.join(">, <@")}>`
@@ -94,13 +94,13 @@ describe("Commands", () => {
 
   it("Should reset the queue list on /reset command", () => {
     const mockedInteraction = generateInteraction(COMMANDS.RESET);
-    const guildState = mockedGlobalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
+    const guildState = globalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
 
     MOCKED_DATA.MEMBERS.forEach((member) => guildState.addMember(member));
     expect(guildState.getMembersInQueue()).toHaveLength(3);
     expect(guildState.getQueue()).toHaveLength(3);
 
-    handleCommand(mockedInteraction, mockedGlobalState);
+    handleCommand(mockedInteraction, globalState);
 
     expect(guildState.getMembersInQueue()).toHaveLength(0);
     expect(guildState.getQueue()).toHaveLength(0);
@@ -111,7 +111,7 @@ describe("Commands", () => {
 
   it("Should start over the queue on /start_over command", () => {
     const mockedInteraction = generateInteraction(COMMANDS.START_OVER);
-    const guildState = mockedGlobalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
+    const guildState = globalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
 
     MOCKED_DATA.MEMBERS.forEach((member) => guildState.addMember(member));
     expect(guildState.getMembersInQueue()).toHaveLength(3);
@@ -120,7 +120,7 @@ describe("Commands", () => {
     guildState.moveNext();
     expect(guildState.getNextMember()).toBe(MOCKED_DATA.MEMBERS[1]);
 
-    handleCommand(mockedInteraction, mockedGlobalState);
+    handleCommand(mockedInteraction, globalState);
 
     expect(guildState.getMembersInQueue()).toHaveLength(3);
     expect(guildState.getQueue()).toHaveLength(3);
@@ -133,14 +133,14 @@ describe("Commands", () => {
 
   it("Should return skip message on /skip command", () => {
     const mockedInteraction = generateInteraction(COMMANDS.SKIP);
-    const guildState = mockedGlobalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
+    const guildState = globalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
 
     MOCKED_DATA.MEMBERS.forEach((member) => guildState.addMember(member));
 
     const currentMember = guildState.getPreviousMember();
     expect(guildState.shouldReAnnounce).toBeFalsy();
 
-    handleCommand(mockedInteraction, mockedGlobalState);
+    handleCommand(mockedInteraction, globalState);
 
     expect(guildState.shouldReAnnounce).toBeTruthy();
     expect(mockedInteraction.reply).toHaveBeenCalledWith(
@@ -161,7 +161,7 @@ describe("Commands", () => {
     it("Should show required message", () => {
       const mockedInteraction = mockedInteractionWithTimeInput(null);
 
-      handleCommand(mockedInteraction, mockedGlobalState);
+      handleCommand(mockedInteraction, globalState);
 
       expect(mockedInteraction.reply).toHaveBeenCalledWith(
         "Please provide the time to set the reminder"
@@ -172,7 +172,7 @@ describe("Commands", () => {
       const mockedInteraction =
         mockedInteractionWithTimeInput("invalid_format");
 
-      handleCommand(mockedInteraction, mockedGlobalState);
+      handleCommand(mockedInteraction, globalState);
 
       expect(mockedInteraction.reply).toHaveBeenCalledWith(
         "Invalid time format, please use HH:mm format (e.g. 14:00)"
@@ -182,7 +182,7 @@ describe("Commands", () => {
     it("Should show invalid format error on invalid time", () => {
       const mockedInteraction = mockedInteractionWithTimeInput("25:00");
 
-      handleCommand(mockedInteraction, mockedGlobalState);
+      handleCommand(mockedInteraction, globalState);
 
       expect(mockedInteraction.reply).toHaveBeenCalledWith(
         "Invalid time format, please use HH:mm format (e.g. 14:00)"
@@ -191,11 +191,11 @@ describe("Commands", () => {
 
     it("Should set reminder time on valid time", () => {
       const mockedInteraction = mockedInteractionWithTimeInput("14:00");
-      const guildState = mockedGlobalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
+      const guildState = globalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
 
       expect(guildState.getReminderTime()).toBe("11:00"); // 11:00 is the default reminder time
 
-      handleCommand(mockedInteraction, mockedGlobalState);
+      handleCommand(mockedInteraction, globalState);
 
       expect(guildState.getReminderTime()).toBe("14:00");
       expect(mockedInteraction.reply).toHaveBeenCalledWith(
