@@ -1,5 +1,5 @@
 import { EmbedBuilder, StringSelectMenuInteraction } from "discord.js";
-import { INTERACTIONS } from "../constants";
+import { INTERACTIONS } from "../constants/commands";
 import { globalState } from "..";
 import { tagUser } from "../util";
 

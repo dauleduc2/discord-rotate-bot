@@ -1,6 +1,6 @@
 import { Client, Collection, GuildMember, User } from "discord.js";
 import { globalState } from ".";
-import { COMMANDS } from "./constants";
+import { COMMANDS } from "./constants/commands";
 import { TIME_INPUT_FORMAT_REGEX } from "./regex";
 
 export const tagUser = (user: User | string) => {

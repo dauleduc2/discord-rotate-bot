@@ -1,5 +1,5 @@
 import { Client, SlashCommandBuilder, TextChannel } from "discord.js";
-import { COMMANDS, INTERACTIONS } from "./constants";
+import { COMMANDS, INTERACTIONS } from "./constants/commands";
 import cron from "node-cron";
 import { globalState } from ".";
 import { tagUser } from "./util";

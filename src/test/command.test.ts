@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, CommandInteraction } from "discord.js";
 import { handleCommand } from "../interactions/command";
-import { COMMANDS } from "../constants";
+import { COMMANDS } from "../constants/commands";
 import { GlobalState } from "../globalState";
 
 jest.mock("../util.ts", () => {

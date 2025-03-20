@@ -9,7 +9,7 @@ import {
   membersToSelectOptions,
   tagUser,
 } from "../util";
-import { COMMANDS, INTERACTIONS } from "../constants";
+import { COMMANDS, INTERACTIONS } from "../constants/commands";
 import { client } from "..";
 import { TIME_INPUT_FORMAT_REGEX } from "../regex";
 import { GlobalState } from "../globalState";
