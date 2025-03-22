@@ -195,8 +195,15 @@ export const handleCommand = async (
           content: "Select all days that you want to announce:",
           components: [row],
         });
+        return;
       }
       case COMMANDS.VIEW_WEEKLY_TIME: {
+        const guildState = globalState.get(guildId);
+        const selectedDays = guildState.getWeeklyDays();
+        await interaction.reply(
+          `Weekly time to announce: ${selectedDays.join(", ")}`
+        );
+        break;
       }
       default:
         break;
