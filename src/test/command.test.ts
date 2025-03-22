@@ -266,4 +266,14 @@ describe("Commands", () => {
       );
     });
   });
+
+  it("Should show the invite link on /get_invite_link command", () => {
+    const mockedInteraction = generateInteraction(COMMANDS.GET_INVITE_LINK);
+
+    handleCommand(mockedInteraction, globalState);
+
+    expect(mockedInteraction.reply).toHaveBeenCalledWith(
+      expect.stringContaining("here is the invite link")
+    );
+  });
 });
