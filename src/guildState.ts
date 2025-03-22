@@ -86,11 +86,15 @@ export class GuildState<T> {
   public isTimeToAnnounce() {
     const now = new Date();
     const [hour, minute] = this.reminderTime?.split(":") ?? [];
-    return (
+    const isOnTime =
       now.getHours() === Number(hour) &&
       now.getMinutes() === Number(minute) &&
-      now.getSeconds() === 0
+      now.getSeconds() === 0;
+    const isOnWeeklyDays = this.weeklyDays.includes(
+      now.toLocaleDateString("en-US", { weekday: "long" })
     );
+
+    return isOnTime && isOnWeeklyDays;
   }
 
   public skipToNext() {
