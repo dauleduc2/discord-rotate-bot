@@ -1,15 +1,15 @@
 import { EmbedBuilder, StringSelectMenuInteraction } from "discord.js";
 import { INTERACTIONS } from "../constants/commands";
-import { globalState } from "..";
 import { tagUser } from "../util";
+import { GlobalState } from "../globalState";
 
 export const handleSelectStringMenu = async (
-  interaction: StringSelectMenuInteraction
+  interaction: StringSelectMenuInteraction,
+  globalState: GlobalState<string>
 ) => {
   const { customId, guild } = interaction;
 
   if (!guild) return;
-
   if (customId === INTERACTIONS.ADD_MEMBER) {
     const selectedMemberIds = interaction.values;
 

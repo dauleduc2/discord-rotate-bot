@@ -3,7 +3,7 @@ import { handleCommand } from "../interactions/command";
 import { COMMANDS } from "../constants/commands";
 import { GlobalState } from "../globalState";
 import { getGuildMembers } from "../util";
-import { NORMAL_USER_1, NORMAL_USER_2 } from "./data";
+import { MOCKED_DATA, NORMAL_USER_1, NORMAL_USER_2 } from "./data";
 
 jest.mock("../util.ts", () => {
   return {
@@ -12,19 +12,6 @@ jest.mock("../util.ts", () => {
     getGuildMembers: jest.fn().mockResolvedValue([]),
   };
 });
-
-const MOCKED_DATA = {
-  MEMBERS: [NORMAL_USER_1.id, NORMAL_USER_2.id],
-  INTERACT_USER_ID: "2222",
-  INTERACT_GUILD_ID: "1111",
-  INTERACT_CHANNEL_ID: "3333",
-};
-
-type DeepPartial<T> = T extends object
-  ? {
-      [P in keyof T]?: DeepPartial<T[P]>;
-    }
-  : T;
 
 const generateInteraction = (
   commandName: string,
