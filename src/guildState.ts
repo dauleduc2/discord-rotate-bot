@@ -1,3 +1,4 @@
+import { WEEKLY_DAYS } from "./constants/time";
 import { PersistQueue } from "./queue";
 
 export interface GuildStateProps<T> {
@@ -11,6 +12,7 @@ export class GuildState<T> {
   private announceChannel: string | null = null;
   private reminderTime: string = "11:00"; // Default to 11:00 AM everyday
   private readonly isEqual: GuildStateProps<T>["isEqual"];
+  private weeklyDays: string[] = WEEKLY_DAYS;
   public shouldReAnnounce = false;
   constructor(props: Partial<GuildStateProps<T>>) {
     this.queue = props.queue ?? new PersistQueue<T>({ isEqual: props.isEqual });
@@ -93,5 +95,13 @@ export class GuildState<T> {
 
   public skipToNext() {
     this.queue.moveNext();
+  }
+
+  public setWeeklyDays(days: string[]) {
+    this.weeklyDays = days;
+  }
+
+  public getWeeklyDays() {
+    return this.weeklyDays;
   }
 }

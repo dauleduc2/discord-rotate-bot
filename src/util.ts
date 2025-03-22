@@ -85,3 +85,13 @@ export const extractTimeFromInput = (timeInput: string) => {
 
   return time[0].split(":");
 };
+
+export const weekTimeToSelections = (time: string[], selected: string[]) => {
+  return time.map((t) => {
+    return {
+      label: t,
+      value: t,
+      default: selected.includes(t),
+    };
+  });
+};

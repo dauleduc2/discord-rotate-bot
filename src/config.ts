@@ -51,6 +51,14 @@ export const registerCommands = (client: Client) => {
     .setName(COMMANDS.GET_INVITE_LINK)
     .setDescription("Get the invite link of the bot to your server");
 
+  const setWeeklyTime = new SlashCommandBuilder()
+    .setName(COMMANDS.SET_WEEKLY_TIME)
+    .setDescription("Set the weekly time to announce");
+
+  const viewWeeklyTime = new SlashCommandBuilder()
+    .setName(COMMANDS.VIEW_WEEKLY_TIME)
+    .setDescription("View the weekly time to announce");
+
   client.application?.commands.create(accept);
   client.application?.commands.create(list);
   client.application?.commands.create(add);
@@ -61,6 +69,8 @@ export const registerCommands = (client: Client) => {
   client.application?.commands.create(resetQueue);
   client.application?.commands.create(setReminderTime);
   client.application?.commands.create(getInviteLink);
+  client.application?.commands.create(setWeeklyTime);
+  client.application?.commands.create(viewWeeklyTime);
 };
 
 export const registerCronJob = (client: Client) => {

@@ -8,12 +8,14 @@ import {
   isPassPrecheck,
   membersToSelectOptions,
   tagUser,
+  weekTimeToSelections,
 } from "../util";
 import { COMMANDS, INTERACTIONS } from "../constants/commands";
 import { client } from "..";
 import { TIME_INPUT_FORMAT_REGEX } from "../constants/regex";
 import { GlobalState } from "../globalState";
 import { ENV_VARIABLES } from "../constants/envVariables";
+import { WEEKLY_DAYS } from "../constants/time";
 
 export const handleCommand = async (
   interaction: CommandInteraction,
@@ -170,7 +172,32 @@ export const handleCommand = async (
         );
         return;
       }
+      case COMMANDS.SET_WEEKLY_TIME: {
+        await interaction.deferReply();
+        const guildState = globalState.get(guildId);
+        const weekTimeOptions = weekTimeToSelections(
+          WEEKLY_DAYS,
+          guildState.getWeeklyDays()
+        );
+        const selectMenu = new StringSelectMenuBuilder()
+          .setCustomId(INTERACTIONS.WEEKLY_TIME_INPUT)
+          .setPlaceholder("Select all days you want to announce")
+          .addOptions(weekTimeOptions)
+          .setMinValues(0)
+          .setMaxValues(weekTimeOptions.length);
 
+        const row =
+          new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+            selectMenu
+          );
+
+        await interaction.editReply({
+          content: "Select all days that you want to announce:",
+          components: [row],
+        });
+      }
+      case COMMANDS.VIEW_WEEKLY_TIME: {
+      }
       default:
         break;
     }
