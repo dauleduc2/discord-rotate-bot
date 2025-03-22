@@ -276,4 +276,26 @@ describe("Commands", () => {
       expect.stringContaining("here is the invite link")
     );
   });
+
+  it("Should show selections for /set_weekly_time command", async () => {
+    const mockedInteraction = generateInteraction(COMMANDS.SET_WEEKLY_TIME);
+
+    await handleCommand(mockedInteraction, globalState);
+
+    expect(mockedInteraction.editReply).toHaveBeenCalledWith(
+      expect.objectContaining({
+        content: "Select all days that you want to announce:",
+      })
+    );
+  });
+
+  it("Should show the weekly time on /view_weekly_time command", () => {
+    const mockedInteraction = generateInteraction(COMMANDS.VIEW_WEEKLY_TIME);
+
+    handleCommand(mockedInteraction, globalState);
+
+    expect(mockedInteraction.reply).toHaveBeenCalledWith(
+      expect.stringContaining("Weekly time to announce:")
+    );
+  });
 });

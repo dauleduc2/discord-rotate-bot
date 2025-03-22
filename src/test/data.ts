@@ -1,3 +1,5 @@
+import { WEEKLY_DAYS } from "../constants/time";
+
 export const NORMAL_USER_1 = {
   id: "385806552163942411",
   user: {
@@ -24,6 +26,7 @@ export const BOT_USER = {
 
 export const MOCKED_DATA = {
   MEMBERS: [NORMAL_USER_1.id, NORMAL_USER_2.id],
+  WEEKLY_TIME: [WEEKLY_DAYS[0], WEEKLY_DAYS[1]],
   INTERACT_USER_ID: "2222",
   INTERACT_GUILD_ID: "1111",
   INTERACT_CHANNEL_ID: "3333",

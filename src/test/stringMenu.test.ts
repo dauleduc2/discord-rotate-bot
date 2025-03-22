@@ -1,7 +1,7 @@
 import { StringSelectMenuInteraction } from "discord.js";
 import { MOCKED_DATA } from "./data";
 import { GlobalState } from "../globalState";
-import { COMMANDS, INTERACTIONS } from "../constants/commands";
+import { INTERACTIONS } from "../constants/commands";
 import { handleSelectStringMenu } from "../interactions/stringMenu";
 
 const generateInteraction = (
@@ -78,6 +78,21 @@ describe("StringMenu", () => {
       expect(mockedInteraction.reply).toHaveBeenCalledWith({
         embeds: expect.any(Array),
       });
+    });
+  });
+
+  it("Set weekly time", async () => {
+    const mockedInteraction = generateInteraction(
+      INTERACTIONS.WEEKLY_TIME_INPUT,
+      {
+        values: MOCKED_DATA.WEEKLY_TIME,
+      }
+    );
+
+    await handleSelectStringMenu(mockedInteraction, globalState);
+
+    expect(mockedInteraction.reply).toHaveBeenCalledWith({
+      embeds: expect.any(Array),
     });
   });
 });
