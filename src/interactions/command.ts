@@ -100,7 +100,7 @@ export const handleCommand = async (
       case COMMANDS.ADD: {
         await interaction.deferReply();
         const members = await getGuildMembers(client, guildId);
-        if (!members) return;
+        if (members === undefined) return;
         const options = membersToSelectOptions(
           members,
           ENV_VARIABLES.MODE === "production"
@@ -110,12 +110,10 @@ export const handleCommand = async (
         const onlyUnattendedMembers = options.filter(
           (option) => !guildState.isMemberExist(option.value)
         );
-        if (onlyUnattendedMembers.length === 0) {
-          await interaction.editReply(
+        if (onlyUnattendedMembers.length === 0)
+          return interaction.editReply(
             "No members found or all members are joined"
           );
-          return;
-        }
         const selectMenu = new StringSelectMenuBuilder()
           .setCustomId(INTERACTIONS.ADD_MEMBER)
           .setPlaceholder("Select a member")

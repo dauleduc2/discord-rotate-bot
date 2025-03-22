@@ -2,16 +2,19 @@ import { ChatInputCommandInteraction, CommandInteraction } from "discord.js";
 import { handleCommand } from "../interactions/command";
 import { COMMANDS } from "../constants/commands";
 import { GlobalState } from "../globalState";
+import { getGuildMembers } from "../util";
+import { NORMAL_USER_1, NORMAL_USER_2 } from "./data";
 
 jest.mock("../util.ts", () => {
   return {
     ...jest.requireActual("../util.ts"),
     isPassPrecheck: jest.fn().mockReturnValue(null),
+    getGuildMembers: jest.fn().mockResolvedValue([]),
   };
 });
 
 const MOCKED_DATA = {
-  MEMBERS: ["1234", "5678", "91011"],
+  MEMBERS: [NORMAL_USER_1.id, NORMAL_USER_2.id],
   INTERACT_USER_ID: "2222",
   INTERACT_GUILD_ID: "1111",
   INTERACT_CHANNEL_ID: "3333",
@@ -97,8 +100,10 @@ describe("Commands", () => {
     const guildState = globalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
 
     MOCKED_DATA.MEMBERS.forEach((member) => guildState.addMember(member));
-    expect(guildState.getMembersInQueue()).toHaveLength(3);
-    expect(guildState.getQueue()).toHaveLength(3);
+    expect(guildState.getMembersInQueue()).toHaveLength(
+      MOCKED_DATA.MEMBERS.length
+    );
+    expect(guildState.getQueue()).toHaveLength(MOCKED_DATA.MEMBERS.length);
 
     handleCommand(mockedInteraction, globalState);
 
@@ -114,16 +119,20 @@ describe("Commands", () => {
     const guildState = globalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
 
     MOCKED_DATA.MEMBERS.forEach((member) => guildState.addMember(member));
-    expect(guildState.getMembersInQueue()).toHaveLength(3);
-    expect(guildState.getQueue()).toHaveLength(3);
+    expect(guildState.getMembersInQueue()).toHaveLength(
+      MOCKED_DATA.MEMBERS.length
+    );
+    expect(guildState.getQueue()).toHaveLength(MOCKED_DATA.MEMBERS.length);
 
     guildState.moveNext();
     expect(guildState.getNextMember()).toBe(MOCKED_DATA.MEMBERS[1]);
 
     handleCommand(mockedInteraction, globalState);
 
-    expect(guildState.getMembersInQueue()).toHaveLength(3);
-    expect(guildState.getQueue()).toHaveLength(3);
+    expect(guildState.getMembersInQueue()).toHaveLength(
+      MOCKED_DATA.MEMBERS.length
+    );
+    expect(guildState.getQueue()).toHaveLength(MOCKED_DATA.MEMBERS.length);
     expect(guildState.getNextMember()).toBe(MOCKED_DATA.MEMBERS[0]);
 
     expect(mockedInteraction.reply).toHaveBeenCalledWith(
@@ -200,6 +209,73 @@ describe("Commands", () => {
       expect(guildState.getReminderTime()).toBe("14:00");
       expect(mockedInteraction.reply).toHaveBeenCalledWith(
         "Set the reminder time to 14:00 everyday"
+      );
+    });
+  });
+
+  describe("Add members", () => {
+    it("Show show no members found message", async () => {
+      const mockedInteraction = generateInteraction(COMMANDS.ADD);
+
+      await handleCommand(mockedInteraction, globalState);
+
+      expect(mockedInteraction.editReply).toHaveBeenCalledWith(
+        "No members found or all members are joined"
+      );
+    });
+
+    it("Should show list of members to add", async () => {
+      (getGuildMembers as jest.Mock).mockResolvedValue([
+        NORMAL_USER_1,
+        NORMAL_USER_2,
+      ]);
+
+      const mockedInteraction = generateInteraction(COMMANDS.ADD);
+
+      await handleCommand(mockedInteraction, globalState);
+
+      expect(mockedInteraction.editReply).toHaveBeenCalledWith(
+        expect.objectContaining({
+          content: "Select a member from the dropdown:",
+        })
+      );
+    });
+  });
+
+  describe("Remove members", () => {
+    it("Should show no members found message", async () => {
+      (getGuildMembers as jest.Mock).mockResolvedValue([
+        NORMAL_USER_1,
+        NORMAL_USER_2,
+      ]);
+
+      const mockedInteraction = generateInteraction(COMMANDS.REMOVE);
+
+      await handleCommand(mockedInteraction, globalState);
+
+      expect(mockedInteraction.editReply).toHaveBeenCalledWith(
+        "No members found or there's no member to remove"
+      );
+    });
+
+    it("Should show list of members to remove", async () => {
+      (getGuildMembers as jest.Mock).mockResolvedValue([
+        NORMAL_USER_1,
+        NORMAL_USER_2,
+      ]);
+
+      const guildState = globalState.get(MOCKED_DATA.INTERACT_GUILD_ID);
+
+      MOCKED_DATA.MEMBERS.forEach((member) => guildState.addMember(member));
+
+      const mockedInteraction = generateInteraction(COMMANDS.REMOVE);
+
+      await handleCommand(mockedInteraction, globalState);
+
+      expect(mockedInteraction.editReply).toHaveBeenCalledWith(
+        expect.objectContaining({
+          content: "Select a member from the dropdown:",
+        })
       );
     });
   });

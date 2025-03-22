@@ -24,7 +24,7 @@
     "build": "tsc",
     "serve": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "test": "jest --runInBand --detectOpenHandles --forceExit"
+    "test": "jest --runInBand --detectOpenHandles --forceExit --silent=false"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
