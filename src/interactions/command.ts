@@ -162,6 +162,15 @@ export const handleCommand = async (
         });
         break;
       }
+      case COMMANDS.GET_INVITE_LINK: {
+        await interaction.reply(
+          `${tagUser(user)} here is the invite link: ${
+            ENV_VARIABLES.INVITE_LINK
+          }`
+        );
+        return;
+      }
+
       default:
         break;
     }

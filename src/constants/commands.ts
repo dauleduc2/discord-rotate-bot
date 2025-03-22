@@ -8,6 +8,7 @@ export const COMMANDS = {
   START_OVER: "start_over",
   CONFIG_CHANNEL: "config_channel",
   SET_REMINDER_TIME: "set_reminder_time",
+  GET_INVITE_LINK: "get_invite_link",
 };
 
 export const INTERACTIONS = {

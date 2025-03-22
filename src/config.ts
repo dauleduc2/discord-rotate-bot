@@ -47,6 +47,10 @@ export const registerCommands = (client: Client) => {
         .setRequired(true)
     );
 
+  const getInviteLink = new SlashCommandBuilder()
+    .setName(COMMANDS.GET_INVITE_LINK)
+    .setDescription("Get the invite link of the bot to your server");
+
   client.application?.commands.create(accept);
   client.application?.commands.create(list);
   client.application?.commands.create(add);
@@ -56,6 +60,7 @@ export const registerCommands = (client: Client) => {
   client.application?.commands.create(configChannel);
   client.application?.commands.create(resetQueue);
   client.application?.commands.create(setReminderTime);
+  client.application?.commands.create(getInviteLink);
 };
 
 export const registerCronJob = (client: Client) => {

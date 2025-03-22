@@ -4,4 +4,5 @@ export const ENV_VARIABLES = {
   MOCK_MEMBER_IDS: process.env.MOCK_MEMBER_IDS?.split(",") || [],
   MOCK_CHANNEL_ID: process.env.MOCK_CHANNEL_ID ?? "",
   MODE: process.env.MODE ?? "production",
+  INVITE_LINK: process.env.INVITE_LINK ?? "",
 };
