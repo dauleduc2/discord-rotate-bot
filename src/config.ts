@@ -5,10 +5,6 @@ import { globalState } from ".";
 import { tagUser } from "./utils/user";
 
 export const registerCommands = (client: Client) => {
-  const accept = new SlashCommandBuilder()
-    .setName(COMMANDS.ACCEPT)
-    .setDescription("Accept today turn");
-
   const skip = new SlashCommandBuilder()
     .setName(COMMANDS.SKIP)
     .setDescription("Skip today turn");
@@ -59,7 +55,10 @@ export const registerCommands = (client: Client) => {
     .setName(COMMANDS.VIEW_WEEKLY_TIME)
     .setDescription("View the weekly time to announce");
 
-  client.application?.commands.create(accept);
+  const help = new SlashCommandBuilder()
+    .setName(COMMANDS.HELP)
+    .setDescription("Shơ all commands and description of them");
+
   client.application?.commands.create(list);
   client.application?.commands.create(add);
   client.application?.commands.create(remove);
@@ -71,6 +70,7 @@ export const registerCommands = (client: Client) => {
   client.application?.commands.create(getInviteLink);
   client.application?.commands.create(setWeeklyTime);
   client.application?.commands.create(viewWeeklyTime);
+  client.application?.commands.create(help);
 };
 
 export const registerCronJob = (client: Client) => {

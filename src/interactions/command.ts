@@ -1,6 +1,7 @@
 import {
   ActionRowBuilder,
   CommandInteraction,
+  EmbedBuilder,
   StringSelectMenuBuilder,
 } from "discord.js";
 
@@ -17,6 +18,7 @@ import {
   tagUser,
 } from "../utils/user";
 import { weekTimeToSelections } from "../utils/time";
+import { COLOR_REPLY_THEME } from "../constants/color";
 
 export const handleCommand = async (
   interaction: CommandInteraction,
@@ -36,9 +38,6 @@ export const handleCommand = async (
 
   try {
     switch (commandName) {
-      case COMMANDS.ACCEPT:
-        await interaction.reply(`${tagUser(user)} accept today turn`);
-        break;
       case COMMANDS.CONFIG_CHANNEL: {
         guildState.setAnnounceChannel(interaction.channelId);
         await interaction.reply(`Config the channel to announce success!`);
@@ -204,6 +203,33 @@ export const handleCommand = async (
         await interaction.reply(
           `Weekly time to announce: ${selectedDays.join(", ")}`
         );
+        break;
+      }
+      case COMMANDS.HELP: {
+        const embed = new EmbedBuilder()
+          .setTitle("Rotate Bot Help")
+          .setColor(COLOR_REPLY_THEME)
+          .setDescription(
+            `__Queue control__:
+          -\`/skip\`: Skip today turn and move to next member in queue
+          -\`/list\`: List all members in queue
+          -\`/add\`: Add a member to queue
+          -\`/remove\`: Remove a member from queue
+          -\`/reset\`: Reset the queue
+          -\`/start_over\`: Start over the queue
+
+          __Settings__:
+          -\`/config_channel\`: Config the channel to announce the member
+          -\`/set_reminder_time\`: Set the reminder time to announce, default to 11:00 AM
+          -\`/set_weekly_time\`: Set the weekly time to announce, default to all days
+          -\`/view_weekly_time\`: View the weekly time to announce
+
+          __Others__:
+          -\`/get_invite_link\`: Get the invite link of the bot to your server
+          -\`/help\`: Show all commands and description of them`
+          );
+
+        await interaction.reply({ embeds: [embed] });
         break;
       }
       default:

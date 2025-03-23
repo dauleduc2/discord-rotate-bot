@@ -45,17 +45,6 @@ describe("Commands", () => {
     jest.clearAllMocks();
   });
 
-  it("Should return accept message on /accept command", () => {
-    // Arrange
-    const mockedInteraction = generateInteraction(COMMANDS.ACCEPT);
-
-    handleCommand(mockedInteraction, globalState);
-
-    expect(mockedInteraction.reply).toHaveBeenCalledWith(
-      `<@${MOCKED_DATA.INTERACT_USER_ID}> accept today turn`
-    );
-  });
-
   it("Should return config channel message on /config_channel command", () => {
     // Arrange
     const mockedInteraction = generateInteraction(COMMANDS.CONFIG_CHANNEL);

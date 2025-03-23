@@ -1,5 +1,4 @@
 export const COMMANDS = {
-  ACCEPT: "accept",
   SKIP: "skip",
   LIST: "list",
   ADD: "add",
@@ -11,6 +10,7 @@ export const COMMANDS = {
   GET_INVITE_LINK: "get_invite_link",
   SET_WEEKLY_TIME: "set_weekly_time",
   VIEW_WEEKLY_TIME: "view_weekly_time",
+  HELP: "help",
 };
 
 export const INTERACTIONS = {

@@ -8,7 +8,6 @@ export const isPassPrecheck = (
 ): string | null => {
   const guildState = state.get(guildId);
   const needChannelConfigCommands = [
-    COMMANDS.ACCEPT,
     COMMANDS.ADD,
     COMMANDS.LIST,
     COMMANDS.REMOVE,
@@ -18,7 +17,6 @@ export const isPassPrecheck = (
   ];
 
   const requiredMembersCommands = [
-    COMMANDS.ACCEPT,
     COMMANDS.LIST,
     COMMANDS.REMOVE,
     COMMANDS.START_OVER,
