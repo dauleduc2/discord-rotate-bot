@@ -14,9 +14,8 @@
     "yarn": "^1.22.22"
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "node dist/index.js",
     "build": "tsc",
-    "serve": "node dist/index.js",
     "dev": "nodemon src/index.ts",
     "test": "jest --runInBand --detectOpenHandles --forceExit --silent=false"
   },
