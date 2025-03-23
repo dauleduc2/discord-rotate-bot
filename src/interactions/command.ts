@@ -3,19 +3,20 @@ import {
   CommandInteraction,
   StringSelectMenuBuilder,
 } from "discord.js";
-import {
-  getGuildMembers,
-  isPassPrecheck,
-  membersToSelectOptions,
-  tagUser,
-  weekTimeToSelections,
-} from "../util";
+
 import { COMMANDS, INTERACTIONS } from "../constants/commands";
 import { client } from "..";
 import { TIME_INPUT_FORMAT_REGEX } from "../constants/regex";
-import { GlobalState } from "../globalState";
+import { GlobalState } from "../store/globalState";
 import { ENV_VARIABLES } from "../constants/envVariables";
 import { WEEKLY_DAYS } from "../constants/time";
+import { isPassPrecheck } from "../utils/command";
+import {
+  getGuildMembers,
+  membersToSelectOptions,
+  tagUser,
+} from "../utils/user";
+import { weekTimeToSelections } from "../utils/time";
 
 export const handleCommand = async (
   interaction: CommandInteraction,

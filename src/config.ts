@@ -2,7 +2,7 @@ import { Client, SlashCommandBuilder, TextChannel } from "discord.js";
 import { COMMANDS, INTERACTIONS } from "./constants/commands";
 import cron from "node-cron";
 import { globalState } from ".";
-import { tagUser } from "./util";
+import { tagUser } from "./utils/user";
 
 export const registerCommands = (client: Client) => {
   const accept = new SlashCommandBuilder()

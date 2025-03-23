@@ -1,7 +1,7 @@
 import { EmbedBuilder, StringSelectMenuInteraction } from "discord.js";
 import { INTERACTIONS } from "../constants/commands";
-import { tagUser } from "../util";
-import { GlobalState } from "../globalState";
+import { GlobalState } from "../store/globalState";
+import { tagUser } from "../utils/user";
 
 export const handleSelectStringMenu = async (
   interaction: StringSelectMenuInteraction,

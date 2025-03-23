@@ -1,6 +1,6 @@
 import { ENV_VARIABLES } from "../constants/envVariables";
-import { GlobalState } from "../globalState";
-import { GuildState } from "../guildState";
+import { GlobalState } from "../store/globalState";
+import { GuildState } from "../store/guildState";
 
 export const mockTestData = (state: GlobalState<string>) => {
   const mockGuildState = new GuildState<string>({});

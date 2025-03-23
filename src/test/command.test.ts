@@ -1,15 +1,21 @@
 import { ChatInputCommandInteraction, CommandInteraction } from "discord.js";
 import { handleCommand } from "../interactions/command";
 import { COMMANDS } from "../constants/commands";
-import { GlobalState } from "../globalState";
-import { getGuildMembers } from "../util";
+import { GlobalState } from "../store/globalState";
+import { getGuildMembers } from "../utils/user";
 import { MOCKED_DATA, NORMAL_USER_1, NORMAL_USER_2 } from "./data";
 
-jest.mock("../util.ts", () => {
+jest.mock("../utils/user.ts", () => {
   return {
-    ...jest.requireActual("../util.ts"),
-    isPassPrecheck: jest.fn().mockReturnValue(null),
+    ...jest.requireActual("../utils/user.ts"),
     getGuildMembers: jest.fn().mockResolvedValue([]),
+  };
+});
+
+jest.mock("../utils/command.ts", () => {
+  return {
+    ...jest.requireActual("../utils/command.ts"),
+    isPassPrecheck: jest.fn().mockReturnValue(null),
   };
 });
 

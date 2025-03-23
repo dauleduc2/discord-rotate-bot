@@ -1,4 +1,4 @@
-import { WEEKLY_DAYS } from "./constants/time";
+import { WEEKLY_DAYS } from "../constants/time";
 import { PersistQueue } from "./queue";
 
 export interface GuildStateProps<T> {
