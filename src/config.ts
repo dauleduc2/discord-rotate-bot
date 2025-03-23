@@ -57,7 +57,7 @@ export const registerCommands = (client: Client) => {
 
   const help = new SlashCommandBuilder()
     .setName(COMMANDS.HELP)
-    .setDescription("Shơ all commands and description of them");
+    .setDescription("Show all commands and description of them");
 
   client.application?.commands.create(list);
   client.application?.commands.create(add);
