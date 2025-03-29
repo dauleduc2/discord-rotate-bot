@@ -3,6 +3,7 @@ import { MOCKED_DATA } from "./data";
 import { GlobalState } from "../store/globalState";
 import { INTERACTIONS } from "../constants/commands";
 import { handleSelectStringMenu } from "../interactions/stringMenu";
+import { DeepPartial } from "../types/type";
 
 const generateInteraction = (
   customId: string,

@@ -4,7 +4,7 @@ import { COMMANDS } from "../constants/commands";
 import { GlobalState } from "../store/globalState";
 import { getGuildMembers } from "../utils/user";
 import { MOCKED_DATA, NORMAL_USER_1, NORMAL_USER_2 } from "./data";
-
+import { DeepPartial } from "../types/type";
 jest.mock("../utils/user.ts", () => {
   return {
     ...jest.requireActual("../utils/user.ts"),
