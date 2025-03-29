@@ -1,17 +1,32 @@
+import { StateAdapter } from "./abstract/StateAdapter";
+
 interface QueueProps<T> {
   isEqual: (a: T, b: T) => boolean;
+  dbAdapter?: StateAdapter<T>;
+  guildId?: string;
 }
 
 export class PersistQueue<T> {
   private data: T[] = [];
   private readonly isEqual: QueueProps<T>["isEqual"];
   private currentIndex = 0;
+  private readonly dbAdapter: StateAdapter<T> | undefined;
+  private readonly guildId: string | undefined;
 
   constructor(props?: Partial<QueueProps<T>>) {
     this.isEqual = props?.isEqual || ((a, b) => a === b);
+    this.dbAdapter = props?.dbAdapter;
+    this.guildId = props?.guildId;
+  }
+
+  getAll() {
+    return this.data;
   }
 
   push(item: T) {
+    if (this.dbAdapter && this.guildId)
+      this.dbAdapter.addMemberToQueue(this.guildId, item);
+
     this.data.push(item);
   }
 
