@@ -1,6 +1,10 @@
 import { GuildState } from "../guildState";
 
 export abstract class StateAdapter<T> {
+  // Initialization
+  public abstract init(): void;
+  public abstract close(): void;
+
   // Global
   public abstract getAllGuildIds(): string[];
 
