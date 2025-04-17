@@ -143,7 +143,10 @@ export const handleCommand = async (
           alreadyJoinedMemberIds.includes(member.id)
         );
         if (!alreadyJoinedMembers) return;
-        const options = membersToSelectOptions(alreadyJoinedMembers, true);
+        const options = membersToSelectOptions(
+          alreadyJoinedMembers,
+          ENV_VARIABLES.MODE === "production"
+        );
         if (options.length === 0) {
           await interaction.editReply(
             "No members found or there's no member to remove"

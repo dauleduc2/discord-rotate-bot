@@ -9,6 +9,9 @@
     "discord.js": "^14.18.0",
     "dotenv": "^16.4.7",
     "node-cron": "^3.0.3",
+    "rimraf": "^6.0.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2",
     "yarn": "^1.22.22"
@@ -17,7 +20,8 @@
     "start": "node dist/index.js",
     "build": "tsc",
     "dev": "nodemon src/index.ts",
-    "test": "jest --runInBand --detectOpenHandles --forceExit --silent=false"
+    "test": "jest --runInBand --detectOpenHandles --forceExit --silent=false",
+    "clear:db": "rimraf db.sqlite"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

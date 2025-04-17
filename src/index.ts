@@ -6,53 +6,63 @@ import { GlobalState } from "./store/globalState";
 import { GuildState } from "./store/guildState";
 import { handleCommand } from "./interactions/command";
 import { handleSelectStringMenu } from "./interactions/stringMenu";
-import { registerCommands, registerCronJob } from "./config";
 import { ENV_VARIABLES } from "./constants/envVariables";
 import { mockTestData } from "./mocks/guild";
 import { isPassPrecheck } from "./utils/command";
+import { registerCommands } from "./config/register";
+import { registerCronJob } from "./config/cron";
+import DB from "./config/db";
+import { applyDatabaseMigrations } from "./utils/data";
+
+export const db = new DB();
 
 export const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
 });
 
-client.once(Events.ClientReady, (c) => {
-  console.log(`Logged in as ${c.user?.tag}`);
+export const globalState = new GlobalState<string>(db);
 
-  registerCommands(client);
-  registerCronJob(client);
-});
+(async () => {
+  await db.init();
+  await applyDatabaseMigrations(db, globalState);
 
-export const globalState = new GlobalState<string>();
+  client.once(Events.ClientReady, (c) => {
+    console.log(`Logged in as ${c.user?.tag}`);
 
-if (ENV_VARIABLES.MODE === "development") {
-  mockTestData(globalState);
-}
+    registerCommands(client);
+    registerCronJob(client);
+  });
 
-client.on(Events.GuildCreate, async (guild) => {
-  globalState.set(guild.id, new GuildState<string>({}));
-});
+  // if (ENV_VARIABLES.MODE === "development") {
+  // mockTestData(globalState);
+  // }
 
-client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isCommand()) return;
+  client.on(Events.GuildCreate, async (guild) => {
+    globalState.set(guild.id, new GuildState<string>({}, db));
+  });
 
-  const { commandName, guildId } = interaction;
+  client.on(Events.InteractionCreate, async (interaction) => {
+    if (!interaction.isCommand()) return;
 
-  if (!guildId) return;
+    const { commandName, guildId } = interaction;
 
-  const precheckError = isPassPrecheck(commandName, guildId, globalState);
+    if (!guildId) return;
 
-  if (precheckError) {
-    await interaction.reply(precheckError);
-    return;
-  }
+    const precheckError = isPassPrecheck(commandName, guildId, globalState);
 
-  handleCommand(interaction, globalState);
-});
+    if (precheckError) {
+      await interaction.reply(precheckError);
+      return;
+    }
 
-client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isStringSelectMenu()) return;
+    handleCommand(interaction, globalState);
+  });
 
-  handleSelectStringMenu(interaction, globalState);
-});
+  client.on(Events.InteractionCreate, async (interaction) => {
+    if (!interaction.isStringSelectMenu()) return;
 
-client.login(ENV_VARIABLES.DISCORD_TOKEN);
+    handleSelectStringMenu(interaction, globalState);
+  });
+
+  client.login(ENV_VARIABLES.DISCORD_TOKEN);
+})();

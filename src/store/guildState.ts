@@ -2,11 +2,17 @@ import { WEEKLY_DAYS } from "../constants/time";
 import { StateAdapter } from "./abstract/StateAdapter";
 import { PersistQueue } from "./queue";
 
-export interface GuildStateProps<T> {
-  queue: PersistQueue<T>;
+export type GuildStateProps<T> = {
   isEqual: (a: T, b: T) => boolean;
+
+  // properties
+  queue: T[];
   guildId?: string;
-}
+  announceChannel?: string | null;
+  reminderTime?: string;
+  weeklyDays?: string[];
+  shouldReAnnounce?: boolean;
+};
 
 export class GuildState<T> {
   private readonly queue: PersistQueue<T>;
@@ -21,18 +27,26 @@ export class GuildState<T> {
   constructor(props: Partial<GuildStateProps<T>>, adapter?: StateAdapter<T>) {
     this.dbAdapter = adapter;
     this.guildId = props.guildId;
-    this.queue =
-      props.queue ??
-      new PersistQueue<T>({ isEqual: props.isEqual, dbAdapter: adapter });
+    if (props.announceChannel) this.announceChannel = props.announceChannel;
+    if (props.reminderTime) this.reminderTime = props.reminderTime;
+    if (props.weeklyDays) this.weeklyDays = props.weeklyDays;
+    if (props.shouldReAnnounce) this.shouldReAnnounce = props.shouldReAnnounce;
+    this.queue = new PersistQueue<T>({
+      isEqual: props.isEqual,
+      dbAdapter: adapter,
+      data: props.queue,
+      guildId: props.guildId,
+    });
     this.isEqual = props.isEqual ?? ((a, b) => a === b);
 
     return new Proxy(this, {
       set: (target, key, value) => {
         if (this.dbAdapter && this.guildId) {
           switch (key) {
-            case "announceChannel":
+            case "announceChannel": {
               this.dbAdapter.saveAnnounceChannel(this.guildId, value as string);
               break;
+            }
             case "reminderTime":
               this.dbAdapter.saveReminderTime(this.guildId, value as string);
               break;
@@ -140,5 +154,9 @@ export class GuildState<T> {
 
   public getWeeklyDays() {
     return this.weeklyDays;
+  }
+
+  public getGuildId() {
+    return this.guildId;
   }
 }

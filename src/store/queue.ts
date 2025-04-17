@@ -4,6 +4,7 @@ interface QueueProps<T> {
   isEqual: (a: T, b: T) => boolean;
   dbAdapter?: StateAdapter<T>;
   guildId?: string;
+  data?: T[];
 }
 
 export class PersistQueue<T> {
@@ -17,6 +18,24 @@ export class PersistQueue<T> {
     this.isEqual = props?.isEqual || ((a, b) => a === b);
     this.dbAdapter = props?.dbAdapter;
     this.guildId = props?.guildId;
+    this.data = props?.data || [];
+
+    return new Proxy(this, {
+      set: (target, key, value) => {
+        if (this.dbAdapter && this.guildId) {
+          switch (key) {
+            case "currentIndex":
+              this.dbAdapter.updateQueueIndex(this.guildId, value as number);
+              break;
+
+            default:
+              break;
+          }
+        }
+
+        return true;
+      },
+    });
   }
 
   getAll() {
@@ -31,6 +50,9 @@ export class PersistQueue<T> {
   }
 
   pushAll(items: T[]) {
+    if (this.dbAdapter && this.guildId)
+      this.dbAdapter.addMembersToQueue(this.guildId, items);
+
     this.data.push(...items);
   }
 
@@ -89,6 +111,13 @@ export class PersistQueue<T> {
   }
 
   remove(item: T) {
+    if (this.dbAdapter && this.guildId) {
+      this.dbAdapter.removeMemberFromQueue(
+        this.guildId,
+        item as unknown as any
+      );
+    }
+
     const index = this.findIndex(item);
 
     if (index === -1) return;
