@@ -15,7 +15,7 @@ import GuildTable from "../../types/SQLite";
 // announceChannel: string; // channel ID
 // reminderTime: string; // time in HH:mm format
 // weeklyDays: string; // comma-separated string of days
-// shouldReAnnounce: boolean; // true or false
+// shouldReAnnounce: boolean;
 
 export class SQLiteAdapter implements StateAdapter<string> {
   public async saveGuild(guildId: string): Promise<void> {
@@ -134,7 +134,6 @@ export class SQLiteAdapter implements StateAdapter<string> {
   }
 
   public saveReminderTime(guildId: string, time: string): void {
-    console.log("Saving reminder time:", time);
     this.checkAndCreateGuild(guildId);
 
     SQLiteAdapter.db?.run(
