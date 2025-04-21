@@ -33,6 +33,7 @@ export class PersistQueue<T> {
           }
         }
 
+        target[key as keyof PersistQueue<T>] = value;
         return true;
       },
     });
@@ -94,12 +95,13 @@ export class PersistQueue<T> {
     }
   }
 
-  get length() {
+  getLength() {
     return this.data.length;
   }
 
   reset() {
     this.data = [];
+    this.currentIndex = 0;
   }
 
   startOver() {
@@ -125,7 +127,7 @@ export class PersistQueue<T> {
     this.data.splice(index, 1);
   }
 
-  isAlreadyExist(item: T) {
-    return this.findIndex(item) !== -1;
-  }
+  // isAlreadyExist(item: T) {
+  //   return this.findIndex(item) !== -1;
+  // }
 }

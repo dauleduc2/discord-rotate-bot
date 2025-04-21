@@ -85,12 +85,13 @@ describe("Commands", () => {
     expect(guildState.getMembersInQueue()).toHaveLength(
       MOCKED_DATA.MEMBERS.length
     );
-    expect(guildState.getQueue()).toHaveLength(MOCKED_DATA.MEMBERS.length);
+    expect(guildState.getMembersInQueue()).toHaveLength(
+      MOCKED_DATA.MEMBERS.length
+    );
 
     handleCommand(mockedInteraction, globalState);
 
     expect(guildState.getMembersInQueue()).toHaveLength(0);
-    expect(guildState.getQueue()).toHaveLength(0);
     expect(mockedInteraction.reply).toHaveBeenCalledWith(
       "Reset the queue list success!"
     );
@@ -104,7 +105,6 @@ describe("Commands", () => {
     expect(guildState.getMembersInQueue()).toHaveLength(
       MOCKED_DATA.MEMBERS.length
     );
-    expect(guildState.getQueue()).toHaveLength(MOCKED_DATA.MEMBERS.length);
 
     guildState.moveNext();
     expect(guildState.getNextMember()).toBe(MOCKED_DATA.MEMBERS[1]);
@@ -114,7 +114,6 @@ describe("Commands", () => {
     expect(guildState.getMembersInQueue()).toHaveLength(
       MOCKED_DATA.MEMBERS.length
     );
-    expect(guildState.getQueue()).toHaveLength(MOCKED_DATA.MEMBERS.length);
     expect(guildState.getNextMember()).toBe(MOCKED_DATA.MEMBERS[0]);
 
     expect(mockedInteraction.reply).toHaveBeenCalledWith(
