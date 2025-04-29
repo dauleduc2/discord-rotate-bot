@@ -7,7 +7,6 @@ import { GuildState } from "./store/guildState";
 import { handleCommand } from "./interactions/command";
 import { handleSelectStringMenu } from "./interactions/stringMenu";
 import { ENV_VARIABLES } from "./constants/envVariables";
-import { mockTestData } from "./mocks/guild";
 import { isPassPrecheck } from "./utils/command";
 import { registerCommands } from "./config/register";
 import { registerCronJob } from "./config/cron";
@@ -32,10 +31,6 @@ export const globalState = new GlobalState<string>(db);
     registerCommands(client);
     registerCronJob(client);
   });
-
-  // if (ENV_VARIABLES.MODE === "development") {
-  // mockTestData(globalState);
-  // }
 
   client.on(Events.GuildCreate, async (guild) => {
     globalState.set(guild.id, new GuildState<string>({}, db));
