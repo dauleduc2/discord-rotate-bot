@@ -19,6 +19,7 @@ import {
 } from "../utils/user";
 import { weekTimeToSelections } from "../utils/time";
 import { COLOR_REPLY_THEME } from "../constants/color";
+import { generateInviteLink } from "../utils/url";
 
 export const handleCommand = async (
   interaction: CommandInteraction,
@@ -169,9 +170,9 @@ export const handleCommand = async (
       }
       case COMMANDS.GET_INVITE_LINK: {
         await interaction.reply(
-          `${tagUser(user)} here is the invite link: ${
-            ENV_VARIABLES.INVITE_LINK
-          }`
+          `${tagUser(user)} here is the invite link: ${generateInviteLink(
+            ENV_VARIABLES.CLIENT_ID
+          )}`
         );
         return;
       }
