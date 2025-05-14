@@ -71,12 +71,36 @@ Follow these steps to install and run the Discord Rotate Bot locally:
    yarn
    ```
 
-3. Start the bot in development mode
-   Launch the bot using the development script:
+3. Running the bot
 
-   ```sh
-   yarn dev
-   ```
+   1. Development mode
+      Launch the bot using the development script:
+
+      ```sh
+      yarn dev
+      ```
+
+   2. Production mode with script:
+
+      1. Build
+
+         You need to build the project before running in production mode
+
+         ```sh
+         yarn build
+         ```
+
+      2. Start
+
+         ```sh
+         yarn start
+         ```
+
+Or you can running the bot with Docker by running following command:
+
+```sh
+docker compose up -d --build
+```
 
 Your bot should now be running and ready to be invited to your server!
 
