@@ -44,7 +44,7 @@ To get a local copy up and running follow these simple example steps.
 
 Before you can run the Discord Rotate Bot, make sure you have the following installed:
 
-- [Node.js](https://nodejs.org/) (v16 or higher)
+- [Node.js](https://nodejs.org/) (v20 or higher)
 - [yarn](https://yarnpkg.com/) for managing packages
 - A [Discord account](https://discord.com/) and a server where you have permission to add bots
 - A [Discord Bot Token](https://discord.com/developers/applications) from the Discord Developer Portal
