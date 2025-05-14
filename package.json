@@ -1,5 +1,6 @@
 {
   "name": "discord-rotate-bot",
+  "description": "A Discord bot that help you to manage circular queues for rotating tasks or responsibilities ",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/greenroach/express-ts-template.git",
